@@ -1,0 +1,71 @@
+.login-page-wrapper * {
+  box-sizing: border-box;
+}
+
+.login-page-wrapper {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+
+.header-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 15px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+.login-page-wrapper::before {
+  font-family: 'Segoe UI', sans-serif;
+  background: 
+    linear-gradient(to right, rgba(0,102,204,0.2), rgba(0,51,102,0.2)),
+    url('/src/assets/tce-bg.jpg') no-repeat center center/cover;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+.login-page-wrapper::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0,102,204,0.7), rgba(0,51,102,0.7));
+  z-index: -1;
+}
+
+.login-page-wrapper .form-container {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.login-page-wrapper input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+}
+
+.login-page-wrapper button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 20px;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
