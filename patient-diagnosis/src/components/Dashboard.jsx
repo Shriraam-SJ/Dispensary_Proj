@@ -146,7 +146,7 @@ const Dashboard = () => {
               { content: 'Qty', styles: { fontStyle: 'bold', halign: 'center' } },
               { content: 'Rs./Unit', styles: { fontStyle: 'bold', halign: 'right' } },
               { content: 'Total Rs.', styles: { fontStyle: 'bold', halign: 'right' } },
-              { content: 'Remarks', styles: { fontStyle: 'bold', halign: 'center' } }
+              { content: 'Remarks/Feedback', styles: { fontStyle: 'bold', halign: 'center' } }
             ]
           ],
           body: items.map(row => [
@@ -288,7 +288,7 @@ const Dashboard = () => {
 
       // ---------- 2. Generate Excel ----------
       const wsData = [
-        ['S.No', 'Medicine Name', 'Opening Stock', 'Stock In', 'Stock Out', 'Closing Stock', 'Remarks'],
+        ['S.No', 'Medicine Name', 'Opening Stock', 'Stock In', 'Stock Out', 'Closing Stock', 'Remarks/Feedback'],
         ...data.map((row, idx) => [
           idx + 1,
           row.name,
@@ -348,7 +348,7 @@ const Dashboard = () => {
             { content: 'M.Staff', styles: { fontStyle: 'bold', halign: 'center' } },
             { content: 'F.Staff', styles: { fontStyle: 'bold', halign: 'center' } },
             { content: 'Total', styles: { fontStyle: 'bold', halign: 'center' } },
-            { content: 'Remarks', styles: { fontStyle: 'bold', halign: 'center' } }
+            { content: 'Remarks/Feedback', styles: { fontStyle: 'bold', halign: 'center' } }
           ]
         ],
         body: tableBody,
