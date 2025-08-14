@@ -2,44 +2,27 @@
   box-sizing: border-box;
 }
 
-.add-patient-page{
-
+.add-patient-page {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
   position: relative;
   z-index: 0;
-
 }
 
-.add-patient-page::before{
+.add-patient-page::before {
   content: '';
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
+  background:
     linear-gradient(to right, rgba(0,102,204,0.2), rgba(0,51,102,0.2)),
     url('/src/assets/tce-bg.jpg') no-repeat center center/cover;
   z-index: -2;
 }
-
-.add-patient-page .back-btn {
-  background: linear-gradient(to right, #6c757d, #868e96);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.add-patient-page .back-btn:hover {
-  transform: translateY(-2px);
-}
-
-
 
 .add-patient-page::after {
   content: '';
@@ -52,9 +35,19 @@
   z-index: -1;
 }
 
+.add-patient-page .back-btn {
+  background: linear-gradient(to right, #6c757d, #868e96);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
 
-
-
+.add-patient-page .back-btn:hover {
+  transform: translateY(-2px);
+}
 
 .add-patient-page #formBox {
   max-width: 1100px;
@@ -71,7 +64,7 @@
 }
 
 .add-patient-page label {
-  color: #003366; /* Dark blue */
+  color: #003366;
   font-weight: bold;
 }
 
@@ -80,15 +73,15 @@
   flex-wrap: wrap;
   gap: 30px;
   margin-bottom: 25px;
-  background-color: #f5f5f5; /* Light gray */
+  background-color: #f5f5f5;
   padding: 20px;
   border-radius: 12px;
 }
 
-
 .add-patient-page .form-group {
   flex: 1;
   min-width: 250px;
+  margin-bottom: 20px;
 }
 
 .add-patient-page input,
@@ -115,4 +108,183 @@
   cursor: pointer;
   margin-top: 30px;
   transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* ✅ ONLY MOBILE ERROR STYLING ADDED - No changes to existing layout */
+.error-input {
+  border: 2px solid #e74c3c !important;
+  background-color: #fdf2f2 !important;
+}
+
+.error-input:focus {
+  border-color: #e74c3c !important;
+  box-shadow: 0 0 0 0.2rem rgba(231, 76, 60, 0.25) !important;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.error-message::before {
+  content: "⚠️";
+  margin-right: 4px;
+}
+
+/* ✅ Edit hint styling - minimal addition */
+.edit-hint {
+  font-size: 11px;
+  color: #666;
+  font-weight: normal;
+  font-style: italic;
+}
+/* ✅ Edit button styling - matches your existing back-btn style */
+.add-patient-page .edit-btn {
+  background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-right: 10px;
+}
+
+.add-patient-page .edit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* ✅ If you want to group buttons together in header */
+.add-patient-page .header-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+/* ✅ Dropdown styling for patient selection in edit mode */
+.add-patient-page .patient-dropdown {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  background: #fff;
+  color: #333;
+  transition: border-color 0.3s;
+  cursor: pointer;
+}
+
+.add-patient-page .patient-dropdown:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
+.add-patient-page .patient-dropdown option {
+  padding: 8px;
+  color: #333;
+}
+
+/* ✅ Header buttons styling */
+.add-patient-page .header-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.add-patient-page .edit-btn {
+  background: linear-gradient(to right, #17a2b8, #138496);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.add-patient-page .edit-btn:hover {
+  transform: translateY(-2px);
+}
+/* ✅ Autocomplete dropdown styling */
+.autocomplete-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item.loading {
+  color: #666;
+  cursor: default;
+  text-align: center;
+  font-style: italic;
+}
+
+.dropdown-item.no-results {
+  color: #999;
+  cursor: default;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ✅ Header buttons styling */
+.header-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.edit-btn {
+  background: linear-gradient(to right, #17a2b8, #138496);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.edit-btn:hover {
+  transform: translateY(-2px);
 }
