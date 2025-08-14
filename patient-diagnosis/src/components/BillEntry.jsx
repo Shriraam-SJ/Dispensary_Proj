@@ -11,14 +11,15 @@ const BillEntry = () => {
 
 
   const [billItems, setBillItems] = useState([
-    {
-      id: 1,
-      medicineName: '',
-      quantity: '',
-      pricePerUnit: '',
-      totalCost: 0
-    }
-  ]);
+  { 
+    id: 1, 
+    medicineName: '', 
+    units: '', // boxes
+    pricePerBox: '', 
+    piecesPerBox: '',
+    totalCost: 0 
+  }
+]);
 
   const [dropdowns, setDropdowns] = useState({
     medicines: {}
@@ -85,42 +86,42 @@ const BillEntry = () => {
 
   // Handle item field changes
 const handleItemChange = (itemId, field, value) => {
-  setBillItems(prev =>
-    prev.map(item => {
-      if (item.id === itemId) {
-        const updatedItem = { ...item };
-
-        // Convert quantity and pricePerUnit to numbers
-        if (field === 'quantity' || field === 'pricePerUnit') {
-          updatedItem[field] = parseFloat(value) || 0;
-        } else {
-          updatedItem[field] = value;
-        }
-
-        // Auto-calculate total cost
-        const quantity = parseFloat(updatedItem.quantity) || 0;
-        const pricePerUnit = parseFloat(updatedItem.pricePerUnit) || 0;
-        updatedItem.totalCost = quantity * pricePerUnit;
-
-        return updatedItem;
+  setBillItems(prev => prev.map(item => {
+    if (item.id === itemId) {
+      const updatedItem = { ...item };
+      
+      // Convert numeric fields to numbers
+      if (field === 'units' || field === 'pricePerBox' || field === 'piecesPerBox') {
+        updatedItem[field] = parseFloat(value) || 0;
+      } else {
+        updatedItem[field] = value;
       }
-      return item;
-    })
-  );
+      
+      // Auto-calculate total cost (units × price per box)
+      const units = parseFloat(updatedItem.units) || 0;
+      const pricePerBox = parseFloat(updatedItem.pricePerBox) || 0;
+      updatedItem.totalCost = units * pricePerBox;
+      
+      return updatedItem;
+    }
+    return item;
+  }));
 };
+
 
 
   // Add new item row
   const addItemRow = () => {
-    const newId = Math.max(...billItems.map(item => item.id)) + 1;
-    setBillItems(prev => [...prev, {
-      id: newId,
-      medicineName: '',
-      quantity: '',
-      pricePerUnit: '',
-      totalCost: 0
-    }]);
-  };
+  const newId = Math.max(...billItems.map(item => item.id)) + 1;
+  setBillItems(prev => [...prev, { 
+    id: newId, 
+    medicineName: '', 
+    units: '', 
+    pricePerBox: '', 
+    piecesPerBox: '',
+    totalCost: 0 
+  }]);
+};
 
   // Remove item row
   const removeItemRow = (itemId) => {
@@ -146,35 +147,36 @@ const handleItemChange = (itemId, field, value) => {
   // Handle form submission
 const handleSubmit = async (e) => {
   e.preventDefault();
-
+  
   // Validate bill info
   if (!billInfo.dateOfPurchase || !billInfo.billNumber) {
     alert('Please enter both date of purchase and bill number.');
     return;
   }
-
+  
   // Validate items
-  const validItems = billItems.filter(item =>
-    item.medicineName && item.quantity && item.pricePerUnit
+  const validItems = billItems.filter(item => 
+    item.medicineName && item.units && item.pricePerBox && item.piecesPerBox
   );
-
+  
   if (validItems.length === 0) {
-    alert('Please add at least one valid item.');
+    alert('Please add at least one valid item with all fields filled.');
     return;
   }
-
+  
   // Prepare submission data
   const submissionData = {
     billInfo,
     items: validItems.map(item => ({
       medicineName: item.medicineName,
-      quantity: parseFloat(item.quantity),
-      pricePerUnit: parseFloat(item.pricePerUnit),
-      totalCost: item.totalCost
+      quantity: parseFloat(item.units) * parseFloat(item.piecesPerBox),
+      units: parseFloat(item.units),// units × pieces per box
+      pricePerUnit: parseFloat(item.pricePerBox),
+      totalCost: item.totalCost // units × price per box
     })),
     grandTotal: calculateGrandTotal()
   };
-
+  
   try {
     await axios.post('http://localhost:5000/api/bills/submit-bill', submissionData);
     alert('✅ Bill submitted and stock updated!');
@@ -183,17 +185,19 @@ const handleSubmit = async (e) => {
     console.error('Submit failed:', err);
     alert('❌ Failed to submit bill entry.');
   }
-
+  
   // Reset form
-  setBillInfo({ dateOfPurchase: '', billNumber: '' });
-  setBillItems([{
-    id: 1,
-    medicineName: '',
-    quantity: '',
-    pricePerUnit: '',
-    totalCost: 0
+  setBillInfo({ dateOfPurchase: '', billNumber: '', enterpriseName: '' });
+  setBillItems([{ 
+    id: 1, 
+    medicineName: '', 
+    units: '', 
+    pricePerBox: '', 
+    piecesPerBox: '',
+    totalCost: 0 
   }]);
 };
+
 
 
   // Handle back button
@@ -315,78 +319,94 @@ useEffect(() => {
               <thead>
                 <tr>
                   <th>Medicine Name</th>
-                  <th>Quantity</th>
-                  <th>Price per Unit (₹)</th>
-                  <th>Total Cost (₹)</th>
+                  <th>Units (Boxes)</th>
+                  <th>Price per Box</th>
+                  <th>Pieces per Box</th>
+                  <th>Total Cost</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {billItems.map(item => (
-                  <tr key={item.id}>
-                    <td>
-                      <div 
-                        style={{ position: 'relative' }}
-                        ref={el => dropdownRefs.current[`medicine-${item.id}`] = el}
-                      >
-                        <input
-                          type="text"
-                          value={item.medicineName}
-                          onChange={(e) => handleMedicineNameChange(item.id, e.target.value)}
-                          placeholder="Search medicine..."
-                          autoComplete="off"
-                        />
-                        <div 
-                          className={`dropdown-list medicine-dropdown ${
-                            dropdowns.medicines[item.id]?.show ? 'show' : ''
-                          }`}
-                        >
-                          {(dropdowns.medicines[item.id]?.items || []).map(medicine => (
-                            <div
-                              key={medicine.id}
-                              className="dropdown-item"
-                              onClick={() => handleMedicineSelect(item.id, medicine)}
-                            >
-                              {medicine.name}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) => handleItemChange(item.id, 'quantity', e.target.value)}
-                        placeholder="Qty"
-                        min="0"
-                        step="1"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        value={item.pricePerUnit}
-                        onChange={(e) => handleItemChange(item.id, 'pricePerUnit', e.target.value)}
-                        placeholder="0.00"
-                        min="0"
-                        step="0.01"
-                      />
-                    </td>
-                    <td className="total-cost">
-                      ₹{item.totalCost.toFixed(2)}
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="remove-btn"
-                        onClick={() => removeItemRow(item.id)}
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {billItems.map((item) => (
+  <tr key={item.id}>
+    <td>
+      <div className="autocomplete-container" ref={el => dropdownRefs.current[item.id] = el}>
+        <input
+          type="text"
+          value={item.medicineName}
+          onChange={(e) => handleMedicineNameChange(item.id, e.target.value)}
+          placeholder="Enter medicine name"
+          required
+        />
+        <div 
+          className={`dropdown-list medicine-dropdown ${
+            dropdowns.medicines[item.id]?.show ? 'show' : ''
+          }`}
+        >
+          {(dropdowns.medicines[item.id]?.items || []).map(medicine => (
+            <div
+              key={medicine.id}
+              className="dropdown-item"
+              onClick={() => handleMedicineSelect(item.id, medicine)}
+            >
+              {medicine.name}
+            </div>
+          ))}
+        </div>
+      </div>
+    </td>
+    
+    <td>
+      <input
+        type="number"
+        value={item.units}
+        onChange={(e) => handleItemChange(item.id, 'units', e.target.value)}
+        placeholder="Units"
+        min="0"
+        step="1"
+        required
+      />
+    </td>
+    
+    <td>
+      <input
+        type="number"
+        value={item.pricePerBox}
+        onChange={(e) => handleItemChange(item.id, 'pricePerBox', e.target.value)}
+        placeholder="Price per box"
+        min="0"
+        step="0.01"
+        required
+      />
+    </td>
+    
+    <td>
+      <input
+        type="number"
+        value={item.piecesPerBox}
+        onChange={(e) => handleItemChange(item.id, 'piecesPerBox', e.target.value)}
+        placeholder="Pieces per box"
+        min="1"
+        step="1"
+        required
+      />
+    </td>
+    
+    <td>
+      <span>₹{item.totalCost.toFixed(2)}</span>
+    </td>
+    
+    <td>
+      <button 
+        type="button" 
+        onClick={() => removeItemRow(item.id)}
+        className="remove-btn"
+      >
+        Remove
+      </button>
+    </td>
+  </tr>
+))}
               </tbody>
             </table>
           </div>
