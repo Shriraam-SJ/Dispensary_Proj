@@ -81,7 +81,7 @@ const Dashboard = () => {
       );
       
       // Add signatures to each page
-      addPDFSignatures(doc);
+      
     }
   };
 
@@ -146,7 +146,7 @@ const Dashboard = () => {
               { content: 'Qty', styles: { fontStyle: 'bold', halign: 'center' } },
               { content: 'Rs./Unit', styles: { fontStyle: 'bold', halign: 'right' } },
               { content: 'Total Rs.', styles: { fontStyle: 'bold', halign: 'right' } },
-              { content: 'Remarks', styles: { fontStyle: 'bold', halign: 'center' } }
+              { content: 'Remarks/Feedback', styles: { fontStyle: 'bold', halign: 'center' } }
             ]
           ],
           body: items.map(row => [
@@ -208,6 +208,7 @@ const Dashboard = () => {
 
       // Add footer and signatures to all pages
       addFooterToAllPages(doc, `Purchase_Report_${fromDate}_to_${toDate}.pdf`);
+      addPDFSignatures(doc);
       doc.save(`Purchase_Report_${fromDate}_to_${toDate}.pdf`);
       
     } catch (error) {
@@ -248,7 +249,7 @@ const Dashboard = () => {
             { content: 'In', styles: { fontStyle: 'bold', halign: 'center' } },
             { content: 'Out', styles: { fontStyle: 'bold', halign: 'center' } },
             { content: 'Closing', styles: { fontStyle: 'bold', halign: 'center' } },
-            { content: 'Remarks', styles: { fontStyle: 'bold', halign: 'center' } }
+            { content: 'Remarks/Feedback', styles: { fontStyle: 'bold', halign: 'center' } }
           ]
         ],
         body: data.map((row, idx) => [
@@ -282,11 +283,12 @@ const Dashboard = () => {
 
       // Add footer and signatures to all pages
       addFooterToAllPages(doc, `Stock_Register_${fromDate}_to_${toDate}.pdf`);
+      addPDFSignatures(doc);
       doc.save(`Stock_Register_${fromDate}_to_${toDate}.pdf`);
 
       // ---------- 2. Generate Excel ----------
       const wsData = [
-        ['S.No', 'Medicine Name', 'Opening Stock', 'Stock In', 'Stock Out', 'Closing Stock', 'Remarks'],
+        ['S.No', 'Medicine Name', 'Opening Stock', 'Stock In', 'Stock Out', 'Closing Stock', 'Remarks/Feedback'],
         ...data.map((row, idx) => [
           idx + 1,
           row.name,
@@ -346,7 +348,7 @@ const Dashboard = () => {
             { content: 'M.Staff', styles: { fontStyle: 'bold', halign: 'center' } },
             { content: 'F.Staff', styles: { fontStyle: 'bold', halign: 'center' } },
             { content: 'Total', styles: { fontStyle: 'bold', halign: 'center' } },
-            { content: 'Remarks', styles: { fontStyle: 'bold', halign: 'center' } }
+            { content: 'Remarks/Feedback', styles: { fontStyle: 'bold', halign: 'center' } }
           ]
         ],
         body: tableBody,
@@ -381,6 +383,7 @@ const Dashboard = () => {
 
       // Add footer and signatures to all pages
       addFooterToAllPages(doc, `Daily_Patient_Summary_${fromDate}_to_${toDate}.pdf`);
+      addPDFSignatures(doc);
       doc.save(`Daily_Patient_Summary_${fromDate}_to_${toDate}.pdf`);
       
     } catch (error) {
@@ -451,7 +454,7 @@ const Dashboard = () => {
         </div>
 
         <div className="section">
-          <h2>Student / Staff Entry Report</h2>
+          <h2>Monthly Patient Report</h2>
           <div className="report-row">
             <label>From:</label>
             <input 

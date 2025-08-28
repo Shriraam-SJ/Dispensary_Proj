@@ -321,7 +321,7 @@ const RequirementQuotation = () => {
 
             <div className="add-btn-container">
               <button type="button" onClick={addNewRow} className="add-row-btn">
-                Add New Row
+                + Add New Row
               </button>
             </div>
           </div>

@@ -98,7 +98,7 @@ router.post('/submit-bill', async (req, res) => {
       // --- c) Insert into bill_particulars (legacy/report) ---
       await client.query(
         'INSERT INTO bill_particulars (bill_no, medicine_name, quantity, price_per_unit) VALUES ($1, $2, $3, $4)',
-        [billNo, medicineName, item.quantity, item.pricePerUnit]
+        [billNo, medicineName, item.units, item.pricePerUnit]
       );
 
       // ---- d) DAILY STOCK REPORT MANAGEMENT ----

@@ -71,10 +71,15 @@ const Register = () => {
           </div>
           <h2>Register - TCE Dispensary</h2>
           <form onSubmit={handleSubmit}>
+            <label htmlFor="name">Full-Name:</label>
             <input type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="Full Name" required />
+            <label htmlFor="email">Mail-ID:</label>
             <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" required />
+            <label htmlFor="phone">Phone Number:</label>
             <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone Number" required />
+            <label htmlFor="password">Enter Password:</label>
             <input type="password" name="password" value={formData.password} onChange={handleInputChange} placeholder="Password" required />
+            <label htmlFor="confirmPassword">Re-enter Password:</label>
             <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} placeholder="Confirm Password" required />
 
             <div className="checkbox-container">

@@ -426,7 +426,7 @@ useEffect(() => {
   className="form-group dropdown-container"
   ref={el => dropdownRefs.current['patientReg'] = el}
 >
-  <label htmlFor="patientRegNo">Patient Register Number *</label>
+  <label htmlFor="patientRegNo">Patient Register Number/Phone number *</label>
   <input
     type="text"
     id="patientRegNo"

@@ -2,9 +2,26 @@ import express from 'express';
 import pool from '../db.js';
 
 const router = express.Router();
+// Add this route to your patientRoutes.js
+router.get('/all-patients', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT regno, name FROM patients ORDER BY regno');
+    res.status(200).json({ 
+      success: true, 
+      patients: result.rows 
+    });
+  } catch (err) {
+    console.error('Error fetching all patients:', err.message);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error' 
+    });
+  }
+});
 
 // ✅ Add New Patient
 router.post('/add-patient', async (req, res) => {
+  console.log('Received request body:', req.body);
   const {
     regno, name, age, gender, date, type, mobile, department,stayType
   } = req.body;
@@ -50,6 +67,33 @@ router.get('/search-regnos', async (req, res) => {
   }
 });
 
+// ✅ NEW: Search patients route for live autocomplete
+router.get('/search-patients', async (req, res) => {
+  const { term } = req.query;
+  
+  if (!term || term.length < 1) {
+    return res.status(400).json({ success: false, message: 'Search term required' });
+  }
+
+  try {
+    // Search for patients whose registration number contains the search term
+    const result = await pool.query(
+      'SELECT regno, name FROM patients WHERE regno ILIKE $1 ORDER BY regno LIMIT 10',
+      [`%${term}%`]
+    );
+
+    res.status(200).json({ 
+      success: true, 
+      patients: result.rows 
+    });
+  } catch (err) {
+    console.error('Search patients error:', err.message);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error' 
+    });
+  }
+});
 
 // 🧾 Fetch Basic Patient Info by Regno (name & gender only)
 // 🧾 Fetch Full Patient Info by Regno
