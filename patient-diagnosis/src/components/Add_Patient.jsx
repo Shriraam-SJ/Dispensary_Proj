@@ -3,8 +3,9 @@ import '../styles/Add_Patient.css';
 import logo from '../assets/tce-logo.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-
+import { useLoader } from '../providers/LoaderProvider';
 const AddPatient = () => {
+  const { withLoader } = useLoader();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -147,7 +148,7 @@ const AddPatient = () => {
       setMobileError('Mobile number must be exactly 10 digits');
       return;
     }
-    
+    await withLoader(async () => {
     try {
       if (isEditMode && isEdit) {
         const res = await axios.put(`http://localhost:5000/api/patients/update-patient/${formData.regno}`, formData);
@@ -165,6 +166,7 @@ const AddPatient = () => {
         console.error(error);
       }
     }
+    });
   };
 
   return (
@@ -182,7 +184,7 @@ const AddPatient = () => {
               <button 
                 type="button" 
                 className="edit-btn"
-                onClick={() => navigate('/add-patient', { state: { edit: true } })}
+                onClick={() => navigate('/AddPatient', { state: { edit: true } })}
               >
                 ✏️ Edit Patient
               </button>

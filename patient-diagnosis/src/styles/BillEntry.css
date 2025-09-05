@@ -19,8 +19,7 @@
   width: 100%;
   height: 100%;
   background: 
-    linear-gradient(to right, rgba(0,102,204,0.2), rgba(0,51,102,0.2)),
-    url('/src/assets/tce-bg.jpg') no-repeat center center/cover;
+    linear-gradient(to right, rgba(0,102,204,0.2), rgba(0,51,102,0.2));
   z-index: -2;
 }
 
@@ -56,6 +55,17 @@
   flex: 1;
   min-width: 200px;
   position: relative;
+}
+.bill-entry-page .error-message {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.bill-entry-page .input-error {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 3px rgba(220, 53, 69, 0.3) !important;
 }
 
 .bill-entry-page input,
@@ -142,4 +152,86 @@
   font-weight: bold;
   color: #28a745;
   background-color: #f8f9fa !important;
+}
+/* Container for medicine input with dropdown */
+.bill-entry-page .medicine-input-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Dropdown menu styling */
+.bill-entry-page .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  margin-top: 2px;
+}
+
+/* Individual dropdown items */
+.bill-entry-page .dropdown-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+}
+
+.bill-entry-page .dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #0066cc;
+}
+
+.bill-entry-page .dropdown-item:last-child {
+  border-bottom: none;
+}
+
+/* Ensure table cell doesn't expand */
+.bill-entry-page .bill-table td {
+  position: relative;
+  overflow: visible; /* Allow dropdown to overflow the cell */
+}
+
+/* Medicine input field */
+.bill-entry-page .medicine-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.bill-entry-page .medicine-input:focus {
+  outline: none;
+  border-color: #0072ff;
+  box-shadow: 0 0 3px rgba(0, 114, 255, 0.3);
+}
+
+/* Prevent table layout issues */
+.bill-entry-page .bill-table {
+  table-layout: fixed; /* This helps maintain consistent column widths */
+}
+
+/* Optional: Add a subtle animation for dropdown appearance */
+.bill-entry-page .dropdown-menu {
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

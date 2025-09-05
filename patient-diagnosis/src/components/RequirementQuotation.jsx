@@ -5,7 +5,6 @@ import 'jspdf-autotable';
 import dayjs from 'dayjs';
 import '../styles/RequirementQuotation.css';
 import logo from '../assets/tce-logo.png';
-
 const RequirementQuotation = () => {
   const navigate = useNavigate();
   const [quotationItems, setQuotationItems] = useState([
@@ -67,6 +66,7 @@ const RequirementQuotation = () => {
   // Generate PDF (Updated to match your other reports' style)
   const generateQuotationPDF = () => {
     // Validate required fields
+    
     if (!quotationInfo.quotationNumber) {
       alert('Please enter quotation number');
       return;

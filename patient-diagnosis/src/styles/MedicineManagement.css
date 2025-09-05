@@ -1,29 +1,26 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
+.medicine-management-page {
   font-family: 'Segoe UI', sans-serif;
-  background: 
-    linear-gradient(to right, rgba(0,102,204,0.2), rgba(0,51,102,0.2));
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  position: relative;
+  z-index: 0;
 }
 
-.requirement-page::before {
+.medicine-management-page::before {
   content: '';
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
-    linear-gradient(to right, rgba(0,102,204,0.2), rgba(0,51,102,0.2));
+  background:
+    linear-gradient(to right, rgba(0,102,204,0.2), rgba(0,51,102,0.2)),
+    url('/src/assets/tce-bg.jpg') no-repeat center center/cover;
   z-index: -2;
 }
 
-.requirement-page::after {
+.medicine-management-page::after {
   content: '';
   position: fixed;
   top: 0;
@@ -34,15 +31,7 @@ body {
   z-index: -1;
 }
 
-.header-logo {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  margin-bottom: 15px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.requirement-container {
+.medicine-container {
   max-width: 1100px;
   margin: 50px auto;
   padding: 40px;
@@ -70,7 +59,7 @@ body {
 .button-container {
   display: flex;
   justify-content: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .back-btn {
@@ -87,38 +76,64 @@ body {
   transform: translateY(-2px);
 }
 
-.form-section {
+.tab-navigation {
+  display: flex;
+  justify-content: center;
   margin-bottom: 30px;
-  padding: 25px;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  background: #fafafa;
+  border-bottom: 2px solid #e0e0e0;
 }
 
-.form-section h3 {
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 15px 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
   color: #004080;
-  margin-bottom: 20px;
-  font-size: 18px;
+}
+
+.tab-btn.active {
+  color: #004080;
+  border-bottom-color: #004080;
+}
+
+.tab-content {
+  padding: 30px 0;
+}
+
+.tab-content h2 {
+  color: #004080;
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+.medicine-form {
+  background: #f9f9f9;
+  padding: 30px;
+  border-radius: 12px;
+  margin-top: 20px;
 }
 
 .form-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  align-items: center;
+  gap: 20px;
   margin-bottom: 20px;
 }
 
 .form-group {
   flex: 1;
-  min-width: 200px;
-  position: relative;
-  overflow: visible;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: bold;
   color: #004080;
 }
@@ -143,82 +158,84 @@ body {
   box-shadow: 0 0 5px rgba(0, 114, 255, 0.3);
 }
 
-.medicine-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+.medicine-search {
+  margin-bottom: 20px;
 }
 
-.medicine-table th,
-.medicine-table td {
-  border: 1px solid #ddd;
+.search-input {
+  width: 100%;
   padding: 12px;
-  text-align: left;
-}
-
-.medicine-table th {
-  background: #f8f9fa;
-  font-weight: bold;
-  color: #004080;
-}
-
-.medicine-table td input,
-.medicine-table td select {
-  width: 100%;
-  padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-size: 16px;
 }
 
-.add-btn-container {
+.medicines-list {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.medicine-item {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-}
-
-.add-row-btn {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
   transition: background-color 0.2s;
 }
 
-.add-row-btn:hover {
-  background: #0056b3;
+.medicine-item:hover {
+  background-color: #f5f5f5;
+}
+
+.medicine-item:last-child {
+  border-bottom: none;
+}
+
+.medicine-info h4 {
+  margin: 0 0 5px 0;
+  color: #004080;
+}
+
+.medicine-info p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.select-btn {
+  background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.select-btn:hover {
+  transform: translateY(-1px);
 }
 
 .remove-btn {
-  background: #dc3545;
+  background: linear-gradient(to right, #dc3545, #c82333);
   color: white;
   border: none;
-  padding: 5px 10px;
-  border-radius: 3px;
+  padding: 8px 16px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 12px;
+  transition: transform 0.2s;
 }
 
 .remove-btn:hover {
-  background: #c82333;
-}
-
-.remove-btn:disabled {
-  background: #6c757d;
-  cursor: not-allowed;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 30px;
+  transform: translateY(-1px);
 }
 
 .submit-btn {
-  background: linear-gradient(to right, #28a745, #60c657);
+  background: linear-gradient(to right, #28a745, #20c997);
   color: white;
   border: none;
   padding: 15px 40px;
@@ -234,7 +251,13 @@ body {
   box-shadow: 0 6px 18px rgba(40, 167, 69, 0.3);
 }
 
-.reset-btn {
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.cancel-btn {
   background: linear-gradient(to right, #6c757d, #868e96);
   color: white;
   border: none;
@@ -246,7 +269,7 @@ body {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.reset-btn:hover {
+.cancel-btn:hover {
   transform: scale(1.03);
   box-shadow: 0 6px 18px rgba(108, 117, 125, 0.3);
 }
@@ -255,16 +278,14 @@ body {
   .form-row {
     flex-direction: column;
   }
-
-  .form-group {
-    min-width: 100%;
-  }
-
-  .action-buttons {
+  
+  .tab-navigation {
     flex-direction: column;
   }
-
-  .medicine-table {
-    font-size: 12px;
+  
+  .medicine-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }

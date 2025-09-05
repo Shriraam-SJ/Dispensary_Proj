@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/register.css';
 import logo from '../assets/tce-logo.png';
-
+import { useLoader } from '../providers/LoaderProvider';
 const Register = () => {
+  const { withLoader } = useLoader();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,31 +36,33 @@ const Register = () => {
       setMessage('❌ Passwords do not match.');
       return;
     }
+// ✅ Wrap the async operation with withLoader
+    await withLoader(async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/register", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            password: formData.password
+          })
+        });
 
-    try {
-      const res = await fetch("http://localhost:5000/api/register", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password
-        })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setMessage(`✅ ${data.message}`);
-        setTimeout(() => navigate('/'), 1500);
-      } else {
-        setMessage(`❌ ${data.message}`);
+        const data = await res.json();
+        
+        if (res.ok) {
+          setMessage(`✅ ${data.message}`);
+          setTimeout(() => navigate('/'), 1500);
+        } else {
+          setMessage(`❌ ${data.message}`);
+        }
+      } catch (err) {
+        console.error(err);
+        setMessage('❌ Server error');
       }
-    } catch (err) {
-      console.error(err);
-      setMessage('❌ Server error');
-    }
+    });
   };
 
   return (

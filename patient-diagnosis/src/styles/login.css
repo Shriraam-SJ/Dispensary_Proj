@@ -18,14 +18,11 @@
   width: 80px;
   height: 80px;
   object-fit: contain;
-  margin-bottom: 15px;
+  margin-bottom: -5px;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 .login-page-wrapper::before {
   font-family: 'Segoe UI', sans-serif;
-  background: 
-    linear-gradient(to right, rgba(0,102,204,0.2), rgba(0,51,102,0.2)),
-    url('/src/assets/tce-bg.jpg') no-repeat center center/cover;
   margin: 0;
   padding: 0;
   min-height: 100vh;

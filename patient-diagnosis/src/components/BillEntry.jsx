@@ -4,10 +4,12 @@ import '../styles/BillEntry.css';
 import logo from '../assets/tce-logo.png';
 import { useNavigate } from 'react-router-dom';
 import axios  from 'axios';
-
+import { useLoader } from '../providers/LoaderProvider';
 
 const BillEntry = () => {
+  const { withLoader } = useLoader();
   const [billInfo, setBillInfo] = useState({ dateOfPurchase: '', billNumber: '', enterpriseName: '' });
+  const [validationErrors, setValidationErrors] = useState({});
 
 
   const [billItems, setBillItems] = useState([
@@ -39,42 +41,32 @@ const BillEntry = () => {
   };
 
   // Handle medicine name autocomplete
-  const handleMedicineNameChange = (itemId, value) => {
-    setBillItems(prev => prev.map(item => 
-      item.id === itemId 
-        ? { ...item, medicineName: value }
-        : item
-    ));
+  // Handle medicine name autocomplete
+const handleMedicineNameChange = (itemId, value) => {
+  setBillItems(prev => prev.map(item => 
+    item.id === itemId ? { ...item, medicineName: value } : item
+  ));
 
-    if (value.length > 0) {
-      const matches = availableMedicines.filter(medicine => 
-        medicine.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setDropdowns(prev => ({
-        ...prev,
-        medicines: {
-          ...prev.medicines,
-          [itemId]: { show: true, items: matches }
-        }
-      }));
-    } else {
-      setDropdowns(prev => ({
-        ...prev,
-        medicines: {
-          ...prev.medicines,
-          [itemId]: { show: false, items: [] }
-        }
-      }));
-    }
-  };
+  // Clear previous error for this field
+  setValidationErrors(prev => {
+    const newErrors = { ...prev };
+    delete newErrors[`medicine_${itemId}`];
+    return newErrors;
+  });
 
-  // Handle medicine selection from dropdown
-  const handleMedicineSelect = (itemId, medicine) => {
-    setBillItems(prev => prev.map(item => 
-      item.id === itemId 
-        ? { ...item, medicineName: medicine.name }
-        : item
-    ));
+  if (value.length > 0) {
+    const matches = availableMedicines.filter(medicine =>
+      medicine.name.toLowerCase().includes(value.toLowerCase())
+    );
+    
+    setDropdowns(prev => ({
+      ...prev,
+      medicines: {
+        ...prev.medicines,
+        [itemId]: { show: true, items: matches }
+      }
+    }));
+  } else {
     setDropdowns(prev => ({
       ...prev,
       medicines: {
@@ -82,7 +74,60 @@ const BillEntry = () => {
         [itemId]: { show: false, items: [] }
       }
     }));
-  };
+  }
+};
+const validateMedicineName = (itemId, medicineName) => {
+  if (!medicineName.trim()) return true; // Allow empty for now
+  
+  const exists = availableMedicines.some(medicine => 
+    medicine.name.toLowerCase() === medicineName.toLowerCase().trim()
+  );
+  
+  if (!exists) {
+    setValidationErrors(prev => ({
+      ...prev,
+      [`medicine_${itemId}`]: "Enter a medicine that is already added"
+    }));
+    return false;
+  }
+  
+  // Clear error if medicine exists
+  setValidationErrors(prev => {
+    const newErrors = { ...prev };
+    delete newErrors[`medicine_${itemId}`];
+    return newErrors;
+  });
+  
+  return true;
+};
+
+
+  // Handle medicine selection from dropdown
+  // Handle medicine selection from dropdown
+const handleMedicineSelect = (itemId, medicine) => {
+  setBillItems(prev => prev.map(item => 
+    item.id === itemId 
+      ? { ...item, medicineName: medicine.name }
+      : item
+  ));
+  
+  // Hide dropdown after selection
+  setDropdowns(prev => ({
+    ...prev,
+    medicines: {
+      ...prev.medicines,
+      [itemId]: { show: false, items: [] }
+    }
+  }));
+
+  // Clear any validation errors for this field
+  setValidationErrors(prev => {
+    const newErrors = { ...prev };
+    delete newErrors[`medicine_${itemId}`];
+    return newErrors;
+  });
+};
+
 
   // Handle item field changes
 const handleItemChange = (itemId, field, value) => {
@@ -122,6 +167,11 @@ const handleItemChange = (itemId, field, value) => {
     totalCost: 0 
   }]);
 };
+const handleMedicineNameBlur = (itemId, value) => {
+  if (value.trim()) {
+    validateMedicineName(itemId, value);
+  }
+};
 
   // Remove item row
   const removeItemRow = (itemId) => {
@@ -153,14 +203,33 @@ const handleSubmit = async (e) => {
     alert('Please enter both date of purchase and bill number.');
     return;
   }
-  
+
+  // Validate medicine names exist
+  let hasValidationErrors = false;
+  billItems.forEach(item => {
+    if (item.medicineName && !validateMedicineName(item.id, item.medicineName)) {
+      hasValidationErrors = true;
+    }
+  });
+
+  if (hasValidationErrors) {
+    alert('Please fix the medicine name errors before submitting.');
+    return;
+  }
+
   // Validate items
   const validItems = billItems.filter(item => 
-    item.medicineName && item.units && item.pricePerBox && item.piecesPerBox
+    item.medicineName && 
+    item.units && 
+    item.pricePerBox && 
+    item.piecesPerBox &&
+    availableMedicines.some(med => 
+      med.name.toLowerCase() === item.medicineName.toLowerCase().trim()
+    )
   );
-  
+
   if (validItems.length === 0) {
-    alert('Please add at least one valid item with all fields filled.');
+    alert('Please add at least one valid item with all fields filled and valid medicine names.');
     return;
   }
   
@@ -176,7 +245,7 @@ const handleSubmit = async (e) => {
     })),
     grandTotal: calculateGrandTotal()
   };
-  
+  await withLoader(async () => {
   try {
     await axios.post('http://localhost:5000/api/bills/submit-bill', submissionData);
     alert('✅ Bill submitted and stock updated!');
@@ -196,6 +265,7 @@ const handleSubmit = async (e) => {
     piecesPerBox: '',
     totalCost: 0 
   }]);
+  });
 };
 
 
@@ -330,29 +400,52 @@ useEffect(() => {
                 {billItems.map((item) => (
   <tr key={item.id}>
     <td>
-      <div className="autocomplete-container" ref={el => dropdownRefs.current[item.id] = el}>
+      <div 
+        className="medicine-input-container"
+        ref={(el) => {
+          if (el) {
+            dropdownRefs.current[item.id] = el;
+          }
+        }}
+      >
         <input
           type="text"
+          className="medicine-input"
           value={item.medicineName}
           onChange={(e) => handleMedicineNameChange(item.id, e.target.value)}
+          onBlur={(e) => handleMedicineNameBlur(item.id, e.target.value)}
           placeholder="Enter medicine name"
-          required
+          style={{
+            borderColor: validationErrors[`medicine_${item.id}`] ? '#dc3545' : '#ccc'
+          }}
         />
-        <div 
-          className={`dropdown-list medicine-dropdown ${
-            dropdowns.medicines[item.id]?.show ? 'show' : ''
-          }`}
-        >
-          {(dropdowns.medicines[item.id]?.items || []).map(medicine => (
-            <div
-              key={medicine.id}
-              className="dropdown-item"
-              onClick={() => handleMedicineSelect(item.id, medicine)}
-            >
-              {medicine.name}
-            </div>
-          ))}
-        </div>
+        {validationErrors[`medicine_${item.id}`] && (
+          <div className="error-message">
+            {validationErrors[`medicine_${item.id}`]}
+          </div>
+        )}
+        {dropdowns.medicines[item.id]?.show && dropdowns.medicines[item.id]?.items?.length > 0 && (
+          <div className="dropdown-menu">
+            {dropdowns.medicines[item.id].items.map(medicine => (
+              <div
+                key={medicine.id}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleMedicineSelect(item.id, medicine);
+                }}
+                className="dropdown-item"
+              >
+                {medicine.name}
+              </div>
+            ))}
+            {dropdowns.medicines[item.id].items.length === 0 && (
+              <div className="dropdown-item" style={{ color: '#999', cursor: 'default' }}>
+                No medicines found
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </td>
     

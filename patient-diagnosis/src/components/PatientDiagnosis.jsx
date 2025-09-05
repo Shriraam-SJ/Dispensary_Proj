@@ -4,7 +4,7 @@ import logo from '../assets/tce-logo.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-
+import { useLoader } from '../providers/LoaderProvider';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
@@ -14,6 +14,7 @@ import * as XLSX from 'xlsx';
 
 
 const PatientDiagnosis = () => {
+  const { withLoader } = useLoader();
   const [formData, setFormData] = useState({
     patientName: '',
     patientRegNo: '',
@@ -36,7 +37,7 @@ const PatientDiagnosis = () => {
       instructions: ''
     }
   ]);
-
+  
   const [dropdowns, setDropdowns] = useState({
     patientName: { show: false, items: [] },
     patientReg: { show: false, items: [] },
@@ -145,34 +146,52 @@ const handlePatientSelect = (patient) => {
 };
 
   // Handle medicine name changes
-  const handleMedicineNameChange = (rowId, value) => {
-    setMedicineRows(prev => prev.map(row => 
-      row.id === rowId 
-        ? { ...row, medicineName: value, availableStock: 0 }
-        : row
-    ));
+  // Add medicine validation state
+const [medicineErrors, setMedicineErrors] = useState({});
 
-    if (value.length > 0) {
-      const matches = medicinesData.filter(m => 
-        m.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setDropdowns(prev => ({
-        ...prev,
-        medicines: {
-          ...prev.medicines,
-          [rowId]: { show: true, items: matches }
-        }
-      }));
-    } else {
-      setDropdowns(prev => ({
-        ...prev,
-        medicines: {
-          ...prev.medicines,
-          [rowId]: { show: false, items: [] }
-        }
-      }));
+// Update handleMedicineNameChange function
+const handleMedicineNameChange = (rowId, value) => {
+  setMedicineRows(prev => 
+    prev.map(row => 
+      row.id === rowId ? { ...row, medicineName: value, availableStock: 0 } : row
+    )
+  );
+
+  // Clear any existing error for this row
+  setMedicineErrors(prev => ({ ...prev, [rowId]: false }));
+
+  if (value.length > 0) {
+    const matches = medicinesData.filter(m => 
+      m.name.toLowerCase().includes(value.toLowerCase())
+    );
+    
+    setDropdowns(prev => ({
+      ...prev,
+      medicines: {
+        ...prev.medicines,
+        [rowId]: { show: true, items: matches }
+      }
+    }));
+
+    // Check if exact match exists
+    const exactMatch = medicinesData.find(m => 
+      m.name.toLowerCase() === value.toLowerCase()
+    );
+    
+    if (!exactMatch && value.length > 2) {
+      setMedicineErrors(prev => ({ ...prev, [rowId]: true }));
     }
-  };
+  } else {
+    setDropdowns(prev => ({
+      ...prev,
+      medicines: {
+        ...prev.medicines,
+        [rowId]: { show: false, items: [] }
+      }
+    }));
+  }
+};
+
 
 const handleMedicineSelect = (rowId, medicine) => {
   if (medicine.stock <= 0) {
@@ -267,7 +286,7 @@ const handleSubmit = async (e) => {
   };
 
   console.log("🟡 Submission Data:", submissionData);
-
+  await withLoader(async () => {
   try {
     const res = await axios.post('http://localhost:5000/api/diagnosis', submissionData); // ✅ your backend path is '/'
     alert("✅ Diagnosis submitted successfully");
@@ -286,6 +305,7 @@ const handleSubmit = async (e) => {
       alert("❌ Unknown error occurred.");
     }
   }
+  });
 };
 
 

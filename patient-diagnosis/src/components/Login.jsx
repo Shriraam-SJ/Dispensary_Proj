@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/login.css";
 import logo from "../assets/tce-logo.png";
+import {useLoader} from "../providers/LoaderProvider";
 
 const Login = () => {
+  const { withLoader } = useLoader();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -21,31 +23,36 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // ✅ Wrap the async operation with withLoader
+    await withLoader(async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
 
-    try {
-      const res = await fetch("http://localhost:5000/api/login", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    email: formData.email,
-    password: formData.password,
-  }),
-});
-
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setMessage(`✅ ${data.message}`);
-        setTimeout(() => navigate("/dashboard"), 1500);
-      } else {
-        setMessage(`❌ ${data.error || data.message}`);
+        const data = await res.json();
+        
+        if (res.ok) {
+          setMessage(`✅ ${data.message}`);
+          setTimeout(() => navigate("/dashboard"), 1500);
+        } else {
+          setMessage(`❌ ${data.error || data.message}`);
+        }
+      } catch (err) {
+        console.error(err);
+        setMessage("❌ Server error");
       }
-    } catch (err) {
-      console.error(err);
-      setMessage("❌ Server error");
-    }
+    });
   };
+
+
+      
 
   return (
     <div className="login-page-wrapper">
