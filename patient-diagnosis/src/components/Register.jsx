@@ -56,7 +56,8 @@ const Register = () => {
           setMessage(`✅ ${data.message}`);
           setTimeout(() => navigate('/'), 1500);
         } else {
-          setMessage(`❌ ${data.message}`);
+          const errorMessage = data.error || data.message || 'An unknown error occurred.';
+          setMessage(`❌ ${errorMessage}`);
         }
       } catch (err) {
         console.error(err);

@@ -6,13 +6,13 @@ const router = express.Router();
 
 // 1. REGISTER
 router.post("/register", async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, phone, password } = req.body;
   try {
     // Hash password before storing
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query(
-      "INSERT INTO users (email, password) VALUES ($1, $2)",
-      [email, hashedPassword]
+      "INSERT INTO users (full_name, email, phone, password) VALUES ($1, $2, $3, $4)",
+      [name, email, phone, hashedPassword]
     );
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {

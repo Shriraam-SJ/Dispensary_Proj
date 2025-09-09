@@ -10,6 +10,7 @@ import billRoutes from './routes/billRoutes.js';
 import medicineRoutes from './routes/medicines.js';
 import patientSummaryRoutes from './routes/patientSummaryRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
+import auth from './routes/authroutes.js';
 const app = express();
 const PORT = 5000;
 
@@ -39,7 +40,7 @@ app.use('/api/diagnosis', diagnosisRoutes);
 app.use('/api/bills', billRoutes);
 app.use('/api/medicines', medicineRoutes);
 app.use('/api/patient', patientSummaryRoutes);
-
+app.use('/api/register',auth)
 
 app.use('/api/report', reportRoutes);
 
