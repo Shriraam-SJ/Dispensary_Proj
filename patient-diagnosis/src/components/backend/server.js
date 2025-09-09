@@ -16,7 +16,8 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 const allowedOrigins = [
-  'http://localhost:5173', // Your local frontend for development
+  'http://localhost:5173',
+  'https://nurseinventory.vercel.app', // Your local frontend for development
   'https://dispensary-proj.onrender.com' // <-- ADD YOUR LIVE FRONTEND URL HERE
 ];
 app.use(cors({
