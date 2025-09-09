@@ -151,10 +151,10 @@ const AddPatient = () => {
     await withLoader(async () => {
     try {
       if (isEditMode && isEdit) {
-        const res = await axios.put(`http://localhost:5000/api/patients/update-patient/${formData.regno}`, formData);
+        const res = await axios.put(`https://dispensary-proj.onrender.com/api/patients/update-patient/${formData.regno}`, formData);
         alert('✅ Patient Updated:\n' + JSON.stringify(res.data.updatedPatient, null, 2));
       } else {
-        const res = await axios.post('http://localhost:5000/api/patients/add-patient', formData);
+        const res = await axios.post('https://dispensary-proj.onrender.com/api/patients/add-patient', formData);
         alert('✅ Patient Added:\n' + JSON.stringify(res.data.patient, null, 2));
       }
       navigate('/dashboard');

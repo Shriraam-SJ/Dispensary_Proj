@@ -247,7 +247,7 @@ const handleSubmit = async (e) => {
   };
   await withLoader(async () => {
   try {
-    await axios.post('http://localhost:5000/api/bills/submit-bill', submissionData);
+    await axios.post('https://dispensary-proj.onrender.com/api/bills/submit-bill', submissionData);
     alert('✅ Bill submitted and stock updated!');
     navigate('/dashboard');
   } catch (err) {
@@ -289,7 +289,7 @@ const handleSubmit = async (e) => {
 useEffect(() => {
   const fetchMedicines = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/medicines'); // Adjust your API path
+      const res = await axios.get('https://dispensary-proj.onrender.com/api/medicines'); // Adjust your API path
       setAvailableMedicines(res.data); // Expected format: [{ id, name }]
     } catch (err) {
       console.error('Failed to fetch medicines:', err);

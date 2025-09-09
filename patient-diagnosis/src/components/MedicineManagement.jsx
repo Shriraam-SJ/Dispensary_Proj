@@ -26,7 +26,7 @@ const MedicineManagement = () => {
   // Fetch all medicines
   const fetchMedicines = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/medicines');
+      const res = await axios.get('https://dispensary-proj.onrender.com/api/medicines');
       setMedicines(res.data);
     } catch (err) {
       console.error('Failed to fetch medicines:', err);
@@ -55,7 +55,7 @@ const MedicineManagement = () => {
 
     await withLoader(async () => {
       try {
-        await axios.post('http://localhost:5000/api/medicines/add', {
+        await axios.post('https://dispensary-proj.onrender.com/api/medicines/add', {
           name: formData.name,
           stock: parseInt(formData.stock),
           price_per_unit: formData.price_per_unit ? parseFloat(formData.price_per_unit) : null
@@ -82,7 +82,7 @@ const MedicineManagement = () => {
 
     await withLoader(async () => {
       try {
-        await axios.put(`http://localhost:5000/api/medicines/update/${selectedMedicine.id}`, {
+        await axios.put(`https://dispensary-proj.onrender.com/api/medicines/update/${selectedMedicine.id}`, {
           name: formData.name,
           stock: parseInt(formData.stock),
           price_per_unit: formData.price_per_unit ? parseFloat(formData.price_per_unit) : null
@@ -107,7 +107,7 @@ const MedicineManagement = () => {
 
     await withLoader(async () => {
       try {
-        await axios.delete(`http://localhost:5000/api/medicines/remove/${medicineId}`);
+        await axios.delete(`https://dispensary-proj.onrender.com/api/medicines/remove/${medicineId}`);
         showReportSuccess('Medicine Removed');
         fetchMedicines();
       } catch (err) {

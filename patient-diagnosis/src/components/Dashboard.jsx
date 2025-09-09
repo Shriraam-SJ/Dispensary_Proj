@@ -108,7 +108,7 @@ const Dashboard = () => {
 
   await withLoader(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/bills/report', {
+      const res = await axios.get('https://dispensary-proj.onrender.com/api/bills/report', {
         params: { from: fromDate, to: toDate }
       });
       const data = res.data;
@@ -211,7 +211,7 @@ const generateStockReport = async () => {
 
   await withLoader(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/report/stock-movement', {
+      const res = await axios.get('https://dispensary-proj.onrender.com/api/report/stock-movement', {
         params: { from: fromDate, to: toDate }
       });
       const data = res.data || [];
@@ -295,7 +295,7 @@ const generateDailyPatientSummaryPDF = async (fromDate, toDate) => {
 
   await withLoader(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/patient/daily-summary', {
+      const res = await axios.get('https://dispensary-proj.onrender.com/api/patient/daily-summary', {
         params: { from: fromDate, to: toDate }
       });
       const data = res.data;

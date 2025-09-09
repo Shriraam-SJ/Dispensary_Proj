@@ -62,7 +62,7 @@ const handlePatientNameChange = async (e) => {
 
   if (value.length > 0) {
     try {
-      const res = await axios.get(`http://localhost:5000/api/patients/search-regnos?query=${value}`);
+      const res = await axios.get(`https://dispensary-proj.onrender.com/api/patients/search-regnos?query=${value}`);
       const matches = res.data;
 
       const nameMatches = matches.filter(p => 
@@ -101,7 +101,7 @@ const handlePatientRegChange = async (e) => {
 
   if (value.length > 0) {
     try {
-      const res = await axios.get(`http://localhost:5000/api/patients/search-regnos?query=${value}`);
+      const res = await axios.get(`https://dispensary-proj.onrender.com/api/patients/search-regnos?query=${value}`);
       const matches = res.data; // already formatted like [{ regNo, name, gender }]
       console.log("Reg Matches:", matches);
 
@@ -288,7 +288,7 @@ const handleSubmit = async (e) => {
   console.log("🟡 Submission Data:", submissionData);
   await withLoader(async () => {
   try {
-    const res = await axios.post('http://localhost:5000/api/diagnosis', submissionData); // ✅ your backend path is '/'
+    const res = await axios.post('https://dispensary-proj.onrender.com/api/diagnosis', submissionData); // ✅ your backend path is '/'
     alert("✅ Diagnosis submitted successfully");
     navigate('/dashboard');
   } catch (err) {
@@ -324,7 +324,7 @@ const [medicinesData, setMedicinesData] = useState([]);
 useEffect(() => {
   const fetchMedicines = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/medicines');
+      const res = await axios.get('https://dispensary-proj.onrender.com/api/medicines');
       setMedicinesData(res.data); // List of { id, name, stock }
     } catch (err) {
       console.error("Failed to fetch medicines:", err);

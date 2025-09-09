@@ -12,24 +12,22 @@ import patientSummaryRoutes from './routes/patientSummaryRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import auth from './routes/authroutes.js';
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5173', // Your local frontend for development
+  'https://dispensary-proj.onrender.com' // <-- ADD YOUR LIVE FRONTEND URL HERE
+];
 app.use(cors({
   origin: function(origin, callback) {
-    // Allow requests with no origin (like curl or Postman)
-    if (!origin) return callback(null, true);
-
-    // Allow any origin that matches localhost with any port
-    if (/^http:\/\/localhost:\d+$/.test(origin)) {
+    if (!origin || allowedOrigins.some(o => origin.startsWith(o))) {
       return callback(null, true);
     }
-
-    // Otherwise block
     callback(new Error('Not allowed by CORS'));
   },
-  credentials: true ,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // if you use cookies or auth headers
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
 app.use(bodyParser.json());
 
